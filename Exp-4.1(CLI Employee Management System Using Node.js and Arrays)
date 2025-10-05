@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Employee Management System</title>
+<style>
+body {
+background-color: black;
+color: white;
+font-family: monospace;
+padding: 20px;
+}
+#terminal {
+background: black;
+padding: 15px;
+border: 2px solid #444;
+white-space: pre-wrap;
+min-height: 400px;
+}
+input {
+background: black;
+color: white;
+border: none;
+outline: none;
+font-family: monospace;
+font-size: 16px;
+width: 100%;
+}
+</style>
+</head>
+<body>
+<div id="terminal"></div>
+<input id="userInput" type="text" autofocus placeholder="Enter your choice here..." />
+
+<script>
+let employees = [
+{ name: "Alice", id: "E101" },
+{ name: "Bob", id: "E102" },
+{ name: "Charlie", id: "E103" }
+];
+
+const terminal = document.getElementById("terminal");
+const userInput = document.getElementById("userInput");
+
+function print(text, newLine = true) {
+terminal.textContent += text + (newLine ? "\n" : "");
+terminal.scrollTop = terminal.scrollHeight;
+}
+
+function showMenu() {
+print("\nEmployee Management System");
+print("1. Add Employee");
+print("2. List Employees");
+print("3. Remove Employee");
+print("4. Exit\n");
+print("Enter your choice: ", false); // <-- no line break
+}
+
+let step = "menu";
+let tempName = "";
+
+showMenu();
+
+userInput.addEventListener("keydown", function(e) {
+if (e.key === "Enter") {
+let value = userInput.value.trim();
+userInput.value = "";
+
+if (step === "menu") {
+print(value);  // print on same line as choice
+if (value === "1") {
+print("Enter employee name: ", false);
+step = "addName";
+} else if (value === "2") {
+print("\nEmployee List:");
+employees.forEach((emp, i) => {
+print(`${i + 1}. Name: ${emp.name}, ID: ${emp.id}`);
+});
+showMenu();
+} else if (value === "3") {
+print("Enter employee ID to remove: ", false);
+step = "remove";
+} else if (value === "4") {
+print("Exiting...");
+userInput.disabled = true;
+} else {
+print("Invalid choice. Try again.");
+showMenu();
+}
+} 
+else if (step === "addName") {
+tempName = value;
+print(value);
+print("Enter employee ID: ", false);
+step = "addID";
+} 
+else if (step === "addID") {
+employees.push({ name: tempName, id: value });
+print(value);
+print(`Employee ${tempName} (ID: ${value}) added successfully.`);
+step = "menu";
+showMenu();
+} 
+else if (step === "remove") {
+print(value);
+const index = employees.findIndex(emp => emp.id === value);
+if (index !== -1) {
+const removed = employees.splice(index, 1)[0];
+print(`Employee ${removed.name} (ID: ${removed.id}) removed successfully.`);
+} else {
+print("Employee not found.");
+}
+step = "menu";
+showMenu();
+}
+}
+});
+</script>
+</body>
+</html>
